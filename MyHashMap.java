@@ -11,10 +11,14 @@ public class MyHashMap<K, V> {
             this.key   = key;
             this.value = value;
         }
+
+        public V getValue(){
+            return value;
+        }
     }
 
     // ── Fields ────────────────────────────────────────────────────────────
-    private LinkedList<Entry<K, V>>[] table;
+    LinkedList<Entry<K, V>>[] table;
     private int size;
     private static final int DEFAULT_CAPACITY = 11;
 
@@ -33,19 +37,22 @@ public class MyHashMap<K, V> {
 
     // ── put ───────────────────────────────────────────────────────────────
     public V put(K key, V value) {
-        // TODO Step 1: compute the index using hash(key)
 
-        // TODO Step 2: if table[index] is null, create a new LinkedList there
+        int index = hash(key);
+        if (table[index] == null){
+            table[index] = new LinkedList<>();
+        }if (table[index].isEmpty()){
+            table[index].add(new Entry<>(key,value));
+            size++;
+            return null;
+        }
+        else if (table[index].getFirst().key.equals(key)){
+            V oldValue = table[index].getFirst().value;
+            table[index].set(0,new Entry<>(key,value));
+            return oldValue;
+        }
 
-        // TODO Step 3: walk the list at table[index]
-        //   -- compare keys using .equals(), not ==
-        //   -- if an entry with the same key already exists, update its value
-        //      and return the OLD value (do not increment size)
-
-        // TODO Step 4: no existing entry found -- add a new Entry to the
-        //   FRONT of the list (O(1) -- no traversal needed), increment size, return null
-
-        return null; // replace this
+        return null;
     }
 
     // ── get ───────────────────────────────────────────────────────────────
@@ -58,6 +65,15 @@ public class MyHashMap<K, V> {
         //   -- if an entry with a matching key is found, return its value
 
         // TODO Step 4: key was not in the list -- return null
+        int index = hash(key);
+        if (table[index] == null){
+            return null;
+        }
+
+        if (table[index].getFirst().key.equals(key)){
+            return table[index].getFirst().value;
+        }
+
 
         return null; // replace this
     }
@@ -109,7 +125,7 @@ public class MyHashMap<K, V> {
         map.put("cat", 1);
         map.put("dog", 2);
         map.put("rat", 3);
-        map.put("bat", 4);
+        System.out.println(map.put("bat", 4));
         map.put("ant", 5);
         System.out.println("Size after 5 insertions: " + map.size());   // 5
 
