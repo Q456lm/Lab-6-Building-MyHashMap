@@ -46,63 +46,67 @@ public class MyHashMap<K, V> {
             size++;
             return null;
         }
-        else if (table[index].getFirst().key.equals(key)){
+        else{
             V oldValue = table[index].getFirst().value;
-            table[index].set(0,new Entry<>(key,value));
+            table[index].add(new Entry<>(key,value));
             return oldValue;
         }
-
-        return null;
     }
 
     // ── get ───────────────────────────────────────────────────────────────
     public V get(K key) {
-        // TODO Step 1: compute the index using hash(key)
-
-        // TODO Step 2: if table[index] is null, return null (key not present)
-
-        // TODO Step 3: walk the list at table[index]
-        //   -- if an entry with a matching key is found, return its value
-
-        // TODO Step 4: key was not in the list -- return null
         int index = hash(key);
         if (table[index] == null){
             return null;
         }
 
-        if (table[index].getFirst().key.equals(key)){
-            return table[index].getFirst().value;
+        for (Entry<K,V> point : table[index]){
+            if (point.key.equals(key)){
+                return point.value;
+            }
         }
 
 
-        return null; // replace this
+        return null;
     }
 
     // ── containsKey ───────────────────────────────────────────────────────
     public boolean containsKey(K key) {
-        // TODO: return true if the key exists in the map, false otherwise
-        // Hint: get(key) returns null when the key is not present --
-        //   but what if a key IS present and its value is null?
-        //   Walk the list directly to be safe.
 
-        return false; // replace this
+        int index = hash(key);
+
+        if (table[index] == null){
+            return false;
+        }
+
+        for (Entry<K,V> point : table[index]){
+            if (point.key.equals(key)){
+                return true;
+            }
+        }
+
+
+        return false;
     }
 
     // ── remove ────────────────────────────────────────────────────────────
     public V remove(K key) {
-        // TODO Step 1: compute the index using hash(key)
 
-        // TODO Step 2: if table[index] is null, return null (nothing to remove)
-
-        // TODO Step 3: walk the list at table[index]
-        //   -- compare keys using .equals(), not ==
-        //   -- if an entry with a matching key is found:
-        //      remove it from the list, decrement size, return its value
-        //   -- You cannot remove from a list inside a for-each loop.
-        //      Use an iterator: Iterator<Entry<K,V>> it = table[index].iterator()
-        //      then it.remove() when you find the match.
-
-        // TODO Step 4: key was not found -- return null
+        int index = hash(key);
+        if (table[index] == null){
+            table[index] = new LinkedList<>();
+        }if (table[index].isEmpty()){
+            return null;
+        }
+        for (Entry<K,V> point : table[index]){
+            if (point.key.equals(key)){
+                table[index].remove(point);
+            }
+            if (table[index].isEmpty()){
+                table[index]=null;
+                size--;
+            }
+        }
 
         return null; // replace this
     }
@@ -125,7 +129,7 @@ public class MyHashMap<K, V> {
         map.put("cat", 1);
         map.put("dog", 2);
         map.put("rat", 3);
-        System.out.println(map.put("bat", 4));
+        map.put("bat", 4);
         map.put("ant", 5);
         System.out.println("Size after 5 insertions: " + map.size());   // 5
 
